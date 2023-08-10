@@ -1,6 +1,7 @@
 package davutcagri.task36.service;
 
 import davutcagri.task36.dto.NoteDTO;
+import davutcagri.task36.dto.StudentDTO;
 import davutcagri.task36.model.Lesson;
 import davutcagri.task36.model.Note;
 import davutcagri.task36.model.Student;
@@ -36,9 +37,14 @@ public class NoteService {
         lesson.getNoteIds().add(note.getNoteId());
         lessonRepository.save(lesson);
 
+        StudentDTO studentDTO = new StudentDTO();
+        studentDTO.setFirstName(student.getFirstName());
+        studentDTO.setLastName(student.getLastName());
+        studentDTO.setEmail(student.getEmail());
+
         NoteDTO noteDTO = new NoteDTO();
         noteDTO.setLessonName(lesson.getLessonName());
-        noteDTO.setStudentName(student.getFirstName() + " " + student.getLastName());
+        noteDTO.setStudent(studentDTO);
         noteDTO.setMidTermNote(note.getMidTermNote());
         noteDTO.setFinalNote(note.getFinalNote());
         noteDTO.setAverageNote(note.getAverageNote());
@@ -48,9 +54,15 @@ public class NoteService {
     public List<NoteDTO> findAll() {
         return noteRepository.findAll().stream().map(note -> {
             Student student = studentRepository.findById(note.getStudentId()).get();
+
+            StudentDTO studentDTO = new StudentDTO();
+            studentDTO.setFirstName(student.getFirstName());
+            studentDTO.setLastName(student.getLastName());
+            studentDTO.setEmail(student.getEmail());
+
             NoteDTO noteDTO = new NoteDTO();
             noteDTO.setLessonName(lessonRepository.findById(note.getLessonId()).get().getLessonName());
-            noteDTO.setStudentName(student.getFirstName() + " " + student.getLastName());
+            noteDTO.setStudent(studentDTO);
             noteDTO.setMidTermNote(note.getMidTermNote());
             noteDTO.setFinalNote(note.getFinalNote());
             noteDTO.setAverageNote(note.getAverageNote());

@@ -31,15 +31,6 @@ public class StudentService {
         studentDTO.setFirstName(student.getFirstName());
         studentDTO.setLastName(student.getLastName());
         studentDTO.setEmail(student.getEmail());
-        studentDTO.setNotes(noteRepository.findAllById(student.getNoteIds()).stream().map(note -> {
-            NoteDTO noteDTO = new NoteDTO();
-            noteDTO.setMidTermNote(note.getMidTermNote());
-            noteDTO.setFinalNote(note.getFinalNote());
-            noteDTO.setAverageNote(note.getAverageNote());
-            noteDTO.setStudentName(student.getFirstName() + " " + student.getLastName());
-            noteDTO.setLessonName(lessonRepository.findById(note.getLessonId()).get().getLessonName());
-            return noteDTO;
-        }).collect(Collectors.toList()));
         return studentDTO;
     }
 
@@ -49,15 +40,6 @@ public class StudentService {
             studentDTO.setFirstName(student.getFirstName());
             studentDTO.setLastName(student.getLastName());
             studentDTO.setEmail(student.getEmail());
-            studentDTO.setNotes(noteRepository.findAllById(student.getNoteIds()).stream().map(note -> {
-                NoteDTO noteDTO = new NoteDTO();
-                noteDTO.setLessonName(lessonRepository.findById(note.getLessonId()).get().getLessonName());
-                noteDTO.setStudentName(student.getFirstName() + " " + student.getLastName());
-                noteDTO.setMidTermNote(note.getMidTermNote());
-                noteDTO.setFinalNote(note.getFinalNote());
-                noteDTO.setAverageNote(note.getAverageNote());
-                return noteDTO;
-            }).collect(Collectors.toList()));
             return studentDTO;
         }).collect(Collectors.toList());
     }
