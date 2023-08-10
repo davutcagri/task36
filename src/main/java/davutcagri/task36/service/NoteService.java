@@ -1,7 +1,9 @@
 package davutcagri.task36.service;
 
 import davutcagri.task36.dto.NoteDTO;
+import davutcagri.task36.model.Lesson;
 import davutcagri.task36.model.Note;
+import davutcagri.task36.model.Student;
 import davutcagri.task36.repository.LessonRepository;
 import davutcagri.task36.repository.NoteRepository;
 import davutcagri.task36.repository.StudentRepository;
@@ -23,16 +25,35 @@ public class NoteService {
         this.studentRepository = studentRepository;
     }
 
-    public void save(Note note) {
+    public NoteDTO save(Note note) {
+        note.setAverageNote((note.getMidTermNote() + note.getFinalNote()) / 2);
         noteRepository.save(note);
+
+        Student student = studentRepository.findById(note.getStudentId()).get();
+        student.getNoteIds().add(note.getNoteId());
+        studentRepository.save(student);
+        Lesson lesson = lessonRepository.findById(note.getLessonId()).get();
+        lesson.getNoteIds().add(note.getNoteId());
+        lessonRepository.save(lesson);
+
+        NoteDTO noteDTO = new NoteDTO();
+        noteDTO.setLessonName(lesson.getLessonName());
+        noteDTO.setStudentName(student.getFirstName() + " " + student.getLastName());
+        noteDTO.setMidTermNote(note.getMidTermNote());
+        noteDTO.setFinalNote(note.getFinalNote());
+        noteDTO.setAverageNote(note.getAverageNote());
+        return noteDTO;
     }
 
     public List<NoteDTO> findAll() {
         return noteRepository.findAll().stream().map(note -> {
+            Student student = studentRepository.findById(note.getStudentId()).get();
             NoteDTO noteDTO = new NoteDTO();
-            noteDTO.setMark(note.getMark());
-            noteDTO.setStudentName(studentRepository.getStudentById(note.getStudentId()).getName());
-            noteDTO.setLessonName(lessonRepository.getLessonById(note.getLessonId()).getName());
+            noteDTO.setLessonName(lessonRepository.findById(note.getLessonId()).get().getLessonName());
+            noteDTO.setStudentName(student.getFirstName() + " " + student.getLastName());
+            noteDTO.setMidTermNote(note.getMidTermNote());
+            noteDTO.setFinalNote(note.getFinalNote());
+            noteDTO.setAverageNote(note.getAverageNote());
             return noteDTO;
         }).collect(Collectors.toList());
     }

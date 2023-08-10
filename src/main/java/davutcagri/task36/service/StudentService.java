@@ -1,15 +1,13 @@
 package davutcagri.task36.service;
 
+import davutcagri.task36.dto.NoteDTO;
 import davutcagri.task36.dto.StudentDTO;
-import davutcagri.task36.model.Lesson;
-import davutcagri.task36.model.Note;
 import davutcagri.task36.model.Student;
 import davutcagri.task36.repository.LessonRepository;
 import davutcagri.task36.repository.NoteRepository;
 import davutcagri.task36.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,71 +15,55 @@ import java.util.stream.Collectors;
 public class StudentService {
 
     private final StudentRepository studentRepository;
-    private final LessonRepository lessonRepository;
     private final NoteRepository noteRepository;
+    private final LessonRepository lessonRepository;
 
-    public StudentService(StudentRepository studentRepository, LessonRepository lessonRepository, NoteRepository noteRepository) {
+    public StudentService(StudentRepository studentRepository, NoteRepository noteRepository, LessonRepository lessonRepository) {
         this.studentRepository = studentRepository;
-        this.lessonRepository = lessonRepository;
         this.noteRepository = noteRepository;
+        this.lessonRepository = lessonRepository;
     }
 
-    public void save(Student student) {
+    public StudentDTO save(Student student) {
         studentRepository.save(student);
+
+        StudentDTO studentDTO = new StudentDTO();
+        studentDTO.setFirstName(student.getFirstName());
+        studentDTO.setLastName(student.getLastName());
+        studentDTO.setEmail(student.getEmail());
+        studentDTO.setNotes(noteRepository.findAllById(student.getNoteIds()).stream().map(note -> {
+            NoteDTO noteDTO = new NoteDTO();
+            noteDTO.setMidTermNote(note.getMidTermNote());
+            noteDTO.setFinalNote(note.getFinalNote());
+            noteDTO.setAverageNote(note.getAverageNote());
+            noteDTO.setStudentName(student.getFirstName() + " " + student.getLastName());
+            noteDTO.setLessonName(lessonRepository.findById(note.getLessonId()).get().getLessonName());
+            return noteDTO;
+        }).collect(Collectors.toList()));
+        return studentDTO;
     }
 
     public List<StudentDTO> findAll() {
         return studentRepository.findAll().stream().map(student -> {
-
-            List<Lesson> lessonList = new ArrayList<>();
-            for (String lessonId : student.getLessonIds()) {
-                Lesson lesson = lessonRepository.getLessonById(lessonId);
-                lessonList.add(lesson);
-            }
-
-            List<Note> noteList = new ArrayList<>();
-            for (String noteId : student.getNoteIds()) {
-                Note note = noteRepository.findNoteById(noteId);
-                noteList.add(note);
-            }
-
             StudentDTO studentDTO = new StudentDTO();
-            studentDTO.setName(student.getName());
-            studentDTO.setLessonNames(lessonList.stream().map(Lesson::getName).collect(Collectors.toList()));
-            studentDTO.setNoteMarks(noteList.stream().map(Note::getMark).collect(Collectors.toList()));
+            studentDTO.setFirstName(student.getFirstName());
+            studentDTO.setLastName(student.getLastName());
+            studentDTO.setEmail(student.getEmail());
+            studentDTO.setNotes(noteRepository.findAllById(student.getNoteIds()).stream().map(note -> {
+                NoteDTO noteDTO = new NoteDTO();
+                noteDTO.setLessonName(lessonRepository.findById(note.getLessonId()).get().getLessonName());
+                noteDTO.setStudentName(student.getFirstName() + " " + student.getLastName());
+                noteDTO.setMidTermNote(note.getMidTermNote());
+                noteDTO.setFinalNote(note.getFinalNote());
+                noteDTO.setAverageNote(note.getAverageNote());
+                return noteDTO;
+            }).collect(Collectors.toList()));
             return studentDTO;
         }).collect(Collectors.toList());
     }
 
     public StudentDTO addLesson(String studentId, String lessonName) {
-        System.out.println(lessonName);
-        try {
-            Student studentInDB = studentRepository.getStudentById(studentId);
-            Lesson lessonInDB = lessonRepository.getLessonByName(lessonName);
-
-            studentInDB.getLessonIds().add(lessonInDB.getId());
-            studentRepository.save(studentInDB);
-
-            List<Lesson> lessonList = new ArrayList<>();
-            for (String lessonId : studentInDB.getLessonIds()) {
-                Lesson lesson = lessonRepository.getLessonById(lessonId);
-                lessonList.add(lesson);
-            }
-
-            List<Note> noteList = new ArrayList<>();
-            for (String noteId : studentInDB.getNoteIds()) {
-                Note note = noteRepository.findNoteById(noteId);
-                noteList.add(note);
-            }
-
-            StudentDTO studentDTO = new StudentDTO();
-            studentDTO.setName(studentInDB.getName());
-            studentDTO.setLessonNames(lessonList.stream().map(Lesson::getName).collect(Collectors.toList()));
-            studentDTO.setNoteMarks(noteList.stream().map(Note::getMark).collect(Collectors.toList()));
-            return studentDTO;
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Error: " + e.getMessage());
-        }
+        return null;
     }
 
 }

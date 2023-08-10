@@ -18,8 +18,8 @@ public class StudentController {
     }
 
     @PostMapping("/save")
-    public void save(@RequestBody Student student) {
-        studentService.save(student);
+    public StudentDTO save(@RequestBody Student student) {
+        return studentService.save(student);
     }
 
     @GetMapping("/findall")

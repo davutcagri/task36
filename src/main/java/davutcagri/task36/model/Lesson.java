@@ -16,10 +16,8 @@ import java.util.List;
 public class Lesson {
 
     @Id
-    private String id;
-    private String name;
-    private String teacher;
-    private List<String> studentIds = new ArrayList<>();
+    private String lessonId;
+    private String lessonName;
     private List<String> noteIds = new ArrayList<>();
 
 }

@@ -5,8 +5,10 @@ import lombok.Data;
 @Data
 public class NoteDTO {
 
-    private Double mark;
-    private String studentName;
     private String lessonName;
+    private String studentName;
+    private Double midTermNote;
+    private Double finalNote;
+    private Double averageNote;
 
 }

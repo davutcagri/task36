@@ -18,8 +18,8 @@ public class NoteController {
     }
 
     @PostMapping("/save")
-    public void save(@RequestBody Note note) {
-        noteService.save(note);
+    public NoteDTO save(@RequestBody Note note) {
+        return noteService.save(note);
     }
 
     @GetMapping("/findall")

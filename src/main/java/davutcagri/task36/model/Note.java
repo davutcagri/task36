@@ -13,8 +13,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Note {
 
     @Id
-    private String id;
-    private Double mark;
+    private String noteId;
+    private Double midTermNote;
+    private Double finalNote;
+    private Double averageNote;
     private String studentId;
     private String lessonId;
 

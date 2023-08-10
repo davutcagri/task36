@@ -6,9 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LessonRepository extends MongoRepository<Lesson, String> {
-
-    Lesson getLessonById(String id);
-
-    Lesson getLessonByName(String name);
-
 }

@@ -19,13 +19,18 @@ public class LessonController {
     }
 
     @PostMapping("/save")
-    public void save(@RequestBody Lesson lesson) {
-       lessonService.save(lesson);
+    public LessonDTO save(@RequestBody Lesson lesson) {
+       return lessonService.save(lesson);
     }
 
     @GetMapping("/findall")
     public List<LessonDTO> findAll() {
         return lessonService.findAll();
+    }
+
+    @GetMapping("/get-one/{lessonId}")
+    public LessonDTO getOne(@PathVariable String lessonId) {
+        return lessonService.getOne(lessonId);
     }
 
 }
