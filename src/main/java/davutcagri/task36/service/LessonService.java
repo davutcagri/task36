@@ -11,6 +11,7 @@ import davutcagri.task36.repository.NoteRepository;
 import davutcagri.task36.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -100,6 +101,44 @@ public class LessonService {
             noteDTO.setAverageNote(note.getAverageNote());
             return noteDTO;
         }).collect(Collectors.toList()));
+        return lessonDTO;
+    }
+
+    public LessonDTO findMaxNotesOfLesson(String lessonId) {
+        double firstPoint = 0, secondPoint = 0, thirdPoint = 0;
+        Lesson lesson = lessonRepository.findById(lessonId).get();
+        List<Note> notes = noteRepository.findNotesByLessonId(lessonId);
+        List<Note> maxNotes = new ArrayList<Note>();
+        for (Note note : notes) {
+            double point = note.getAverageNote();
+            if (point > firstPoint) {
+                maxNotes.add(note);
+            } else if (point > secondPoint && point != firstPoint) {
+                maxNotes.add(note);
+            }
+            else if (point > thirdPoint && point != secondPoint) {
+                maxNotes.add(note);
+            }
+        }
+
+        LessonDTO lessonDTO = new LessonDTO();
+        lessonDTO.setLessonName(lesson.getLessonName());
+        lessonDTO.setAverageMark(lesson.getAverateNote());
+        lessonDTO.setNotes(maxNotes.stream().map(note -> {
+            Student student = studentRepository.findById(note.getStudentId()).get();
+            StudentDTO studentDTO = new StudentDTO();
+            studentDTO.setFirstName(student.getFirstName());
+            studentDTO.setLastName(student.getLastName());
+            studentDTO.setEmail(student.getEmail());
+
+            NoteDTO noteDTO = new NoteDTO();
+            noteDTO.setStudent(studentDTO);
+            noteDTO.setAverageNote(note.getAverageNote());
+            noteDTO.setMidTermNote(note.getMidTermNote());
+            noteDTO.setFinalNote(note.getFinalNote());
+            return noteDTO;
+        }).collect(Collectors.toList()));
+
         return lessonDTO;
     }
 

@@ -23,7 +23,7 @@ public class LessonController {
        return lessonService.save(lesson);
     }
 
-    @GetMapping("/findall")
+    @GetMapping("/find-all")
     public List<LessonDTO> findAll() {
         return lessonService.findAll();
     }
@@ -31,6 +31,11 @@ public class LessonController {
     @GetMapping("/get-one/{lessonId}")
     public LessonDTO getOne(@PathVariable String lessonId) {
         return lessonService.getOne(lessonId);
+    }
+
+    @GetMapping("/{lessonId}/get-max-notes")
+    public LessonDTO findMaxNotesOfLesson(@PathVariable String lessonId) {
+        return lessonService.findMaxNotesOfLesson(lessonId);
     }
 
 }
