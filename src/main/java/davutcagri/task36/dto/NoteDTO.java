@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class NoteDTO {
 
-    private String lessonName;
+    private LessonDTO lesson;
     private StudentDTO student;
     private Double midTermNote;
     private Double finalNote;

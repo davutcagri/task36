@@ -10,5 +10,6 @@ public class StudentDTO {
     private String firstName;
     private String lastName;
     private String email;
+    private List<NoteDTO> notes;
 
 }

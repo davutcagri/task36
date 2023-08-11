@@ -27,4 +27,9 @@ public class NoteController {
         return noteService.findAll();
     }
 
+    @GetMapping("/get-one/{noteId}")
+    public NoteDTO findNoteById(@PathVariable String noteId) {
+        return noteService.findNoteById(noteId);
+    }
+
 }

@@ -42,7 +42,6 @@ public class LessonService {
             studentDTO.setEmail(student.getEmail());
 
             NoteDTO noteDTO = new NoteDTO();
-            noteDTO.setLessonName(lesson.getLessonName());
             noteDTO.setStudent(studentDTO);
             noteDTO.setMidTermNote(note.getMidTermNote());
             noteDTO.setFinalNote(note.getFinalNote());
@@ -54,8 +53,10 @@ public class LessonService {
 
     public List<LessonDTO> findAll() {
         return lessonRepository.findAll().stream().map(lesson -> {
+            calculateAverageNote(lesson);
             LessonDTO lessonDTO = new LessonDTO();
             lessonDTO.setLessonName(lesson.getLessonName());
+            lessonDTO.setAverageMark(lesson.getAverateNote());
             lessonDTO.setNotes(noteRepository.findAllById(lesson.getNoteIds()).stream().map(note -> {
                 Student student = studentRepository.findById(note.getStudentId()).get();
 
@@ -65,7 +66,6 @@ public class LessonService {
                 studentDTO.setEmail(student.getEmail());
 
                 NoteDTO noteDTO = new NoteDTO();
-                noteDTO.setLessonName(lessonRepository.findById(note.getLessonId()).get().getLessonName());
                 noteDTO.setStudent(studentDTO);
                 noteDTO.setMidTermNote(note.getMidTermNote());
                 noteDTO.setFinalNote(note.getFinalNote());
@@ -77,11 +77,14 @@ public class LessonService {
     }
 
     public LessonDTO getOne(String lessonId) {
-        Optional<Lesson> lesson = lessonRepository.findById(lessonId);
+        Lesson lesson = lessonRepository.findById(lessonId).get();
         List<Note> notes = noteRepository.findNotesByLessonId(lessonId);
 
+        calculateAverageNote(lesson);
+
         LessonDTO lessonDTO = new LessonDTO();
-        lessonDTO.setLessonName(lesson.get().getLessonName());
+        lessonDTO.setLessonName(lesson.getLessonName());
+        lessonDTO.setAverageMark(lesson.getAverateNote());
         lessonDTO.setNotes(notes.stream().map(note -> {
             Student student = studentRepository.findById(note.getStudentId()).get();
 
@@ -91,7 +94,6 @@ public class LessonService {
             studentDTO.setEmail(student.getEmail());
 
             NoteDTO noteDTO = new NoteDTO();
-            noteDTO.setLessonName(lessonRepository.findById(note.getLessonId()).get().getLessonName());
             noteDTO.setStudent(studentDTO);
             noteDTO.setMidTermNote(note.getMidTermNote());
             noteDTO.setFinalNote(note.getFinalNote());
@@ -99,6 +101,16 @@ public class LessonService {
             return noteDTO;
         }).collect(Collectors.toList()));
         return lessonDTO;
+    }
+
+    public void calculateAverageNote(Lesson lesson) {
+        List<Note> notes = noteRepository.findNotesByLessonId(lesson.getLessonId());
+        double totalNote = 0;
+        for (Note note : notes) {
+            totalNote = +note.getAverageNote();
+        }
+        lesson.setAverateNote(totalNote / notes.size());
+        lessonRepository.save(lesson);
     }
 
 }

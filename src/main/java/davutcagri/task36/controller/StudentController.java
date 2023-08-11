@@ -27,8 +27,9 @@ public class StudentController {
         return studentService.findAll();
     }
 
-    @PutMapping("/add/lesson/{studentId}")
-    public StudentDTO addLesson(@PathVariable String studentId, @RequestBody String lessonName) {
-        return studentService.addLesson(studentId, lessonName);
+    @GetMapping("/get-one/{studentId}")
+    public StudentDTO findStudentById(@PathVariable String studentId) {
+        return studentService.findStundentById(studentId);
     }
+
 }

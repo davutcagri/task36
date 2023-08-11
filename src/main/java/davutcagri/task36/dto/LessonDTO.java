@@ -8,6 +8,7 @@ import java.util.List;
 public class LessonDTO {
 
     private String lessonName;
+    private Double averageMark;
     private List<NoteDTO> notes;
 
 }

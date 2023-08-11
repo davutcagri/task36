@@ -18,6 +18,7 @@ public class Lesson {
     @Id
     private String lessonId;
     private String lessonName;
+    private Double averateNote;
     private List<String> noteIds = new ArrayList<>();
 
 }
