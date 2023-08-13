@@ -32,4 +32,15 @@ public class StudentController {
         return studentService.findStundentById(studentId);
     }
 
+    @GetMapping("/get-passed-student")
+    public List<StudentDTO> findPassedStudentsByNote() {
+        return studentService.findPassedStudentsByNote();
+    }
+
+    @GetMapping("/get-failed-student")
+    public List<StudentDTO> findFailedStudentsByNote() {
+        return studentService.findFailedStudentsByNote();
+    }
+
+
 }

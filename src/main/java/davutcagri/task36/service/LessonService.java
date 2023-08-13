@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -106,20 +105,35 @@ public class LessonService {
 
     public LessonDTO findMaxNotesOfLesson(String lessonId) {
         double firstPoint = 0, secondPoint = 0, thirdPoint = 0;
+        String firstNoteId = null, secondNoteId = null, thirdNoteId = null;
         Lesson lesson = lessonRepository.findById(lessonId).get();
         List<Note> notes = noteRepository.findNotesByLessonId(lessonId);
         List<Note> maxNotes = new ArrayList<Note>();
         for (Note note : notes) {
             double point = note.getAverageNote();
             if (point > firstPoint) {
-                maxNotes.add(note);
+                thirdPoint = secondPoint;
+                secondPoint = firstPoint;
+                firstPoint = point;
+
+                thirdNoteId = secondNoteId;
+                secondNoteId = firstNoteId;
+                firstNoteId = note.getNoteId();
             } else if (point > secondPoint && point != firstPoint) {
-                maxNotes.add(note);
-            }
-            else if (point > thirdPoint && point != secondPoint) {
-                maxNotes.add(note);
+                thirdPoint = secondPoint;
+                secondPoint = point;
+
+                thirdNoteId = secondNoteId;
+                secondNoteId = note.getNoteId();
+            } else if (point > thirdPoint && point != secondPoint) {
+                thirdPoint = point;
+
+                thirdNoteId = note.getNoteId();
             }
         }
+        maxNotes.add(noteRepository.findById(firstNoteId).get());
+        maxNotes.add(noteRepository.findById(secondNoteId).get());
+        maxNotes.add(noteRepository.findById(thirdNoteId).get());
 
         LessonDTO lessonDTO = new LessonDTO();
         lessonDTO.setLessonName(lesson.getLessonName());

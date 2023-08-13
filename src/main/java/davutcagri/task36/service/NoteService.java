@@ -28,7 +28,7 @@ public class NoteService {
     }
 
     public NoteDTO save(Note note) {
-        note.setAverageNote((note.getMidTermNote() + note.getFinalNote()) / 2);
+        note.setAverageNote((note.getMidTermNote() + note.getFinalNote()));
         noteRepository.save(note);
 
         Student student = studentRepository.findById(note.getStudentId()).get();

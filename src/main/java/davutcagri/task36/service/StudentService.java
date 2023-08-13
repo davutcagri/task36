@@ -4,12 +4,14 @@ import davutcagri.task36.dto.LessonDTO;
 import davutcagri.task36.dto.NoteDTO;
 import davutcagri.task36.dto.StudentDTO;
 import davutcagri.task36.model.Lesson;
+import davutcagri.task36.model.Note;
 import davutcagri.task36.model.Student;
 import davutcagri.task36.repository.LessonRepository;
 import davutcagri.task36.repository.NoteRepository;
 import davutcagri.task36.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -79,6 +81,58 @@ public class StudentService {
             return noteDTO;
         }).collect(Collectors.toList()));
         return studentDTO;
+    }
+
+    public List<StudentDTO> findPassedStudentsByNote() {
+        List<Note> notes = noteRepository.findAll();
+        List<Note> passedNotes = notes.stream().filter(note -> note.getAverageNote() > 50).collect(Collectors.toList());
+
+        return studentRepository.findAllById(passedNotes.stream().map(Note::getStudentId).collect(Collectors.toList())).stream().map(student -> {
+            StudentDTO studentDTO = new StudentDTO();
+            studentDTO.setFirstName(student.getFirstName());
+            studentDTO.setLastName(student.getLastName());
+            studentDTO.setEmail(student.getEmail());
+            studentDTO.setNotes(passedNotes.stream().map(note -> {
+                NoteDTO noteDTO = new NoteDTO();
+                noteDTO.setLesson(lessonRepository.findById(note.getLessonId()).map(lesson -> {
+                    LessonDTO lessonDTO = new LessonDTO();
+                    lessonDTO.setLessonName(lesson.getLessonName());
+                    lessonDTO.setAverageMark(lesson.getAverateNote());
+                    return lessonDTO;
+                }).get());
+                noteDTO.setMidTermNote(note.getMidTermNote());
+                noteDTO.setFinalNote(note.getFinalNote());
+                noteDTO.setAverageNote(note.getAverageNote());
+                return noteDTO;
+            }).collect(Collectors.toList()));
+            return studentDTO;
+        }).collect(Collectors.toList());
+    }
+
+    public List<StudentDTO> findFailedStudentsByNote() {
+        List<Note> notes = noteRepository.findAll();
+        List<Note> passedNotes = notes.stream().filter(note -> note.getAverageNote() < 50).collect(Collectors.toList());
+
+        return studentRepository.findAllById(passedNotes.stream().map(Note::getStudentId).collect(Collectors.toList())).stream().map(student -> {
+            StudentDTO studentDTO = new StudentDTO();
+            studentDTO.setFirstName(student.getFirstName());
+            studentDTO.setLastName(student.getLastName());
+            studentDTO.setEmail(student.getEmail());
+            studentDTO.setNotes(passedNotes.stream().map(note -> {
+                NoteDTO noteDTO = new NoteDTO();
+                noteDTO.setLesson(lessonRepository.findById(note.getLessonId()).map(lesson -> {
+                    LessonDTO lessonDTO = new LessonDTO();
+                    lessonDTO.setLessonName(lesson.getLessonName());
+                    lessonDTO.setAverageMark(lesson.getAverateNote());
+                    return lessonDTO;
+                }).get());
+                noteDTO.setMidTermNote(note.getMidTermNote());
+                noteDTO.setFinalNote(note.getFinalNote());
+                noteDTO.setAverageNote(note.getAverageNote());
+                return noteDTO;
+            }).collect(Collectors.toList()));
+            return studentDTO;
+        }).collect(Collectors.toList());
     }
 
 }
