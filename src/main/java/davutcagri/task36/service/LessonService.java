@@ -160,7 +160,7 @@ public class LessonService {
         List<Note> notes = noteRepository.findNotesByLessonId(lesson.getLessonId());
         double totalNote = 0;
         for (Note note : notes) {
-            totalNote = +note.getAverageNote();
+            totalNote += note.getAverageNote();
         }
         lesson.setAverateNote(totalNote / notes.size());
         lessonRepository.save(lesson);
