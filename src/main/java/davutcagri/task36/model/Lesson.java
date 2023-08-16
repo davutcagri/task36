@@ -18,7 +18,7 @@ public class Lesson {
     @Id
     private String lessonId;
     private String lessonName;
-    private Double averateNote;
+    private Double averaeNote;
     private List<String> noteIds = new ArrayList<>();
 
 }

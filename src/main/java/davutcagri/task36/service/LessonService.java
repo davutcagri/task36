@@ -56,7 +56,7 @@ public class LessonService {
             calculateAverageNote(lesson);
             LessonDTO lessonDTO = new LessonDTO();
             lessonDTO.setLessonName(lesson.getLessonName());
-            lessonDTO.setAverageMark(lesson.getAverateNote());
+            lessonDTO.setAverageMark(lesson.getAverageNote());
             lessonDTO.setNotes(noteRepository.findAllById(lesson.getNoteIds()).stream().map(note -> {
                 Student student = studentRepository.findById(note.getStudentId()).get();
 
@@ -84,7 +84,7 @@ public class LessonService {
 
         LessonDTO lessonDTO = new LessonDTO();
         lessonDTO.setLessonName(lesson.getLessonName());
-        lessonDTO.setAverageMark(lesson.getAverateNote());
+        lessonDTO.setAverageMark(lesson.getAverageNote());
         lessonDTO.setNotes(notes.stream().map(note -> {
             Student student = studentRepository.findById(note.getStudentId()).get();
 
@@ -137,7 +137,7 @@ public class LessonService {
 
         LessonDTO lessonDTO = new LessonDTO();
         lessonDTO.setLessonName(lesson.getLessonName());
-        lessonDTO.setAverageMark(lesson.getAverateNote());
+        lessonDTO.setAverageMark(lesson.getAverageNote());
         lessonDTO.setNotes(maxNotes.stream().map(note -> {
             Student student = studentRepository.findById(note.getStudentId()).get();
             StudentDTO studentDTO = new StudentDTO();
@@ -162,7 +162,7 @@ public class LessonService {
         for (Note note : notes) {
             totalNote += note.getAverageNote();
         }
-        lesson.setAverateNote(totalNote / notes.size());
+        lesson.setAverageNote(totalNote / notes.size());
         lessonRepository.save(lesson);
     }
 

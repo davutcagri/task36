@@ -1,5 +1,6 @@
 package davutcagri.task36.controller;
 
+import davutcagri.task36.dto.FailedAndSucceedStudentDTO;
 import davutcagri.task36.dto.StudentDTO;
 import davutcagri.task36.model.Student;
 import davutcagri.task36.service.StudentService;
@@ -32,15 +33,9 @@ public class StudentController {
         return studentService.findStundentById(studentId);
     }
 
-    @GetMapping("/get-passed-student")
-    public List<StudentDTO> findPassedStudentsByNote() {
-        return studentService.findPassedStudentsByNote();
+    @GetMapping("/find-all-with-status")
+    public FailedAndSucceedStudentDTO findFailedAndSucceedStudents() {
+        return studentService.findFailedAndSucceedStudents();
     }
-
-    @GetMapping("/get-failed-student")
-    public List<StudentDTO> findFailedStudentsByNote() {
-        return studentService.findFailedStudentsByNote();
-    }
-
 
 }
